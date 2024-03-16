@@ -9,8 +9,16 @@
 # at https://raw.githubusercontent.com/RetroPie/RetroPie-Setup/master/LICENSE.md
 #
 
-scriptdir="$(dirname "$0")"
-scriptdir="$(cd "$scriptdir" && pwd)"
+rp_module_id="resetromdirs"
+rp_module_desc="Reset ownership/permissions of RetroPie/roms directory"
+rp_module_section="config"
 
-"$scriptdir/retropie_packages.sh" setup gui
-
+function gui_resetromdirs() {
+    printHeading "Resetting $romdir ownershop/permissions"
+    mkUserDir "$romdir"
+    mkUserDir "$biosdir"
+    chown -R $user:$user "$romdir"
+    chown -R $user:$user "$biosdir"
+    chmod -R ug+rwX "$romdir"
+    chmod -R ug+rwX "$biosdir"
+}
