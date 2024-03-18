@@ -25,3 +25,22 @@ echo "emulationstation #auto" >>"$script"
 chown $user:$user "$script"
 
 
+# Chemin du fichier de configuration pour l'auto-login
+AUTLOGIN_CONF="/lib/systemd/system/getty@tty1.service.d/20-autologin.conf"
+
+# Créer le fichier s'il n'existe pas
+if [ ! -f "$AUTLOGIN_CONF" ]; then
+    sudo touch "$AUTLOGIN_CONF"
+fi
+
+# Vérifier à nouveau si le fichier de configuration existe
+if [ -f "$AUTLOGIN_CONF" ]; then
+    # Ajouter les lignes nécessaires
+    echo "[Service]" | sudo tee -a "$AUTLOGIN_CONF" > /dev/null
+    echo "ExecStart=" | sudo tee -a "$AUTLOGIN_CONF" > /dev/null
+    echo "ExecStart=-/sbin/agetty --autologin pi --noclear %I \$TERM" | sudo tee -a "$AUTLOGIN_CONF" > /dev/null
+    echo "Auto-login configuré pour l'utilisateur pi."
+else
+    echo "Erreur: Le fichier de configuration ($AUTLOGIN_CONF) n'existe pas."
+    exit 1
+fi
