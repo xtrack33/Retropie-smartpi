@@ -9,78 +9,88 @@
 # at https://raw.githubusercontent.com/RetroPie/RetroPie-Setup/master/LICENSE.md
 #
 
-__version="4.8.6"
+# Set the version of the script
+__version="4.8.6" # Script version
 
-[[ "$__debug" -eq 1 ]] && set -x
+# Enable debugging if __debug is set to 1
+[[ "$__debug" -eq 1 ]] && set -x # Turn on bash's debug mode if __debug equals 1
 
-# main retropie install location
-rootdir="/opt/retropie"
+# Main RetroPie installation location
+rootdir="/opt/retropie" # The root directory for RetroPie installation
 
-# if __user is set, try and install for that user, else use SUDO_USER
+# If __user is set, try and install for that user, else use SUDO_USER
 if [[ -n "$__user" ]]; then
-    user="$__user"
+    user="$__user" # The user to install for if __user is set
+    # Check if user exists, exit if not
     if ! id -u "$__user" &>/dev/null; then
-        echo "User $__user not exist"
+        echo "User $__user does not exist" # User does not exist error message
         exit 1
     fi
 else
-    user="$SUDO_USER"
-    [[ -z "$user" ]] && user="$(id -un)"
+    user="$SUDO_USER" # Use SUDO_USER if __user not set
+    [[ -z "$user" ]] && user="$(id -un)" # Use current user if SUDO_USER is not set
 fi
 
-home="$(eval echo ~$user)"
-datadir="$home/RetroPie"
-biosdir="$datadir/BIOS"
-romdir="$datadir/roms"
-emudir="$rootdir/emulators"
-configdir="$rootdir/configs"
+# Define directories
+home="$(eval echo ~$user)" # The home directory of the user
+datadir="$home/RetroPie" # Data directory where RetroPie data will be stored
+biosdir="$datadir/BIOS" # BIOS directory
+romdir="$datadir/roms" # ROM directory
+emudir="$rootdir/emulators" # Emulators directory
+configdir="$rootdir/configs" # Configuration files directory
 
-scriptdir="$(dirname "$0")"
-scriptdir="$(cd "$scriptdir" && pwd)"
+scriptdir="$(dirname "$0")" # Directory of the script
+scriptdir="$(cd "$scriptdir" && pwd)" # Absolute path of the script directory
 
-__logdir="$scriptdir/logs"
-__tmpdir="$scriptdir/tmp"
-__builddir="$__tmpdir/build"
-__swapdir="$__tmpdir"
+# Temporary and log directories
+__logdir="$scriptdir/logs" # Log directory
+__tmpdir="$scriptdir/tmp" # Temporary files directory
+__builddir="$__tmpdir/build" # Build directory
+__swapdir="$__tmpdir" # Swap directory
 
-# check, if sudo is used
+# Check if script is run with sudo
 if [[ "$(id -u)" -ne 0 ]]; then
-    echo "Script must be run under sudo from the user you want to install for. Try 'sudo $0'"
+    echo "Script must be run under sudo from the user you want to install for. Try 'sudo $0'" # Error message if not run as sudo
     exit 1
 fi
 
-__backtitle="retropie.org.uk - RetroPie Setup. Installation folder: $rootdir for user $user"
+# Setup dialog backtitle
+__backtitle="retropie.org.uk - RetroPie Setup. Installation folder: $rootdir for user $user" # Backtitle for dialogs
 
-source "$scriptdir/scriptmodules/system.sh"
-source "$scriptdir/scriptmodules/helpers.sh"
-source "$scriptdir/scriptmodules/inifuncs.sh"
-source "$scriptdir/scriptmodules/packages.sh"
+# Source other scripts
+source "$scriptdir/scriptmodules/system.sh" # System functions
+source "$scriptdir/scriptmodules/helpers.sh" # Helper functions
+source "$scriptdir/scriptmodules/inifuncs.sh" # ini file functions
+source "$scriptdir/scriptmodules/packages.sh" # Package functions
 
-setup_env
+# Initialize environment and register modules
+setup_env # Setup environment variables
+rp_registerAllModules # Register all modules
 
-rp_registerAllModules
+# Ensure framebuffer mode is set
+ensureFBMode 320 240 # Set framebuffer mode
 
-ensureFBMode 320 240
-
-rp_ret=0
+# Main logic
+rp_ret=0 # Default return code
 if [[ $# -gt 0 ]]; then
-    setupDirectories
-    rp_callModule "$@"
-    rp_ret=$?
+    setupDirectories # Setup directories
+    rp_callModule "$@" # Call module with arguments
+    rp_ret=$? # Set return code based on module call
 else
-    rp_printUsageinfo
+    rp_printUsageinfo # Print usage information if no arguments
 fi
 
+# Check for errors and print messages
 if [[ "${#__ERRMSGS[@]}" -gt 0 ]]; then
-    # override return code if ERRMSGS is set - eg in the case of calling basic_install from setup
-    # we won't get the return code, as we don't handle return codes when calling non packaging functions
-    # as it would require all modules functions to handle errors differently, and make things more complicated
-    [[ "$rp_ret" -eq 0 ]] && rp_ret=1
-    printMsgs "console" "Errors:\n${__ERRMSGS[@]}"
+    [[ "$rp_ret" -eq 0 ]] && rp_ret=1 # Set return code to 1 if there are error messages
+    printMsgs "console" "Errors:\n${__ERRMSGS[@]}" # Print error messages
 fi
 
+# Print info messages if any
 if [[ "${#__INFMSGS[@]}" -gt 0 ]]; then
-    printMsgs "console" "Info:\n${__INFMSGS[@]}"
+    printMsgs "console" "Info:\n${__INFMSGS[@]}" # Print info messages
 fi
 
-exit $rp_ret
+final_ret=$rp_ret
+echo "Script ended with code $final_ret"
+
