@@ -25,18 +25,20 @@ echo "Changed to the Retropie-smartpi directory."
 echo "Making installation scripts executable..."
 #sudo chmod +x retropie_setup.sh SambaRetropie.sh retropie_packages.sh autostartES.sh
 
-# Function to execute a script and check its success
+# Function to execute a script with arguments and check its success
 execute_script() {
-    echo "Executing $1..."
-    if sudo ./$1; then
-        echo "$1 executed successfully."
+    script=$1
+    shift # Remove the first argument, the script name, and keep the rest as parameters for the script
+    echo "Executing $script with arguments $@..."
+    if sudo ./$script "$@"; then
+        echo "$script executed successfully with arguments $@."
     else
-        echo "Failed to execute $1."
+        echo "Failed to execute $script with arguments $@."
         #exit 1
     fi
 }
 
-# Executing installation and setup scripts
+# Executing installation and setup scripts with parameters
 execute_script retropie_packages.sh setup basic_install
 execute_script retropie_packages.sh bluetooth depends
 execute_script retropie_packages.sh usbromservice
