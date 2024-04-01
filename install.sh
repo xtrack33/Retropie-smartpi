@@ -60,4 +60,12 @@ else
     echo "Failed to make autostart script executable."
 fi
 
+echo "Modifying /etc/sudoers to allow sudo group execute commands without a password..."
+if sudo sed -i 's/^%sudo\s*ALL=(ALL:ALL)\s*ALL$/%sudo   ALL=(ALL:ALL) NOPASSWD: ALL/' /etc/sudoers; then
+    echo "Successfully modified /etc/sudoers."
+else
+    echo "Failed to modify /etc/sudoers. Please check permissions and try again."
+    #exit 1
+fi
+
 echo "Retropie Installation and configuration completed."
