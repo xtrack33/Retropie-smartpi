@@ -22,8 +22,9 @@ After=network.target
 
 [Service]
 Type=simple
-User=pi
-ExecStart=/usr/bin/python3 /home/pi/Retropie-smartpi/yumi-services/RomsCopy.py
+ExecStartPre=/bin/sleep 240
+User=${BASE_USER}
+ExecStart=/usr/bin/python3 /home/${BASE_USER}/Retropie-smartpi/yumi-services/RomsCopy.py
 Restart=on-failure
 
 [Install]

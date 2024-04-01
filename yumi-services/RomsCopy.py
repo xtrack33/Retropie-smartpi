@@ -1,5 +1,13 @@
 import os
 import shutil
+import logging
+
+# Configuration du logging
+log_filename = 'romscopy.log'
+logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+# Début du script
+logging.info('Démarrage du script de copie des ROMs.')
 
 # Chemin vers le dossier des ROMs sur la clé USB
 usb_roms_path = '/media/usb0/roms'  # Ajustez ce chemin en fonction de votre configuration
@@ -17,26 +25,35 @@ consoles = [
 ]
 
 def copy_roms(usb_path, retropie_path, consoles):
+    # Vérifie si le chemin USB existe pour confirmer la présence de la clé USB
+    if os.path.exists(usb_path):
+        logging.info(f'Clé USB détectée à {usb_path}.')
+    else:
+        logging.warning('Clé USB non détectée. Vérifiez le chemin et assurez-vous que la clé USB est connectée.')
+        return
+
     for console in consoles:
         source_path = os.path.join(usb_path, console)
         destination_path = os.path.join(retropie_path, console)
 
-        # Vérifie si le dossier de la console existe sur la clé USB
         if os.path.exists(source_path):
-            # Crée le dossier de la console dans RetroPie s'il n'existe pas
-            os.makedirs(destination_path, exist_ok=True)
-            
-            # Copie les ROMs du dossier de la console
+            if not os.path.exists(destination_path):
+                os.makedirs(destination_path, exist_ok=True)
+                logging.info(f'Dossier créé : {destination_path}')
+            else:
+                logging.info(f'Dossier déjà existant : {destination_path}')
+                
             for rom in os.listdir(source_path):
                 source_rom = os.path.join(source_path, rom)
                 destination_rom = os.path.join(destination_path, rom)
                 
-                # Copie le fichier si ce n'est pas déjà fait
                 if not os.path.exists(destination_rom):
                     shutil.copy2(source_rom, destination_rom)
-                    print(f'Copié: {source_rom} vers {destination_rom}')
+                    logging.info(f'Copié: {source_rom} vers {destination_rom}')
                 else:
-                    print(f'Le fichier existe déjà: {destination_rom}')
+                    logging.info(f'Le fichier existe déjà et n\'a pas été recopié: {destination_rom}')
+
+    logging.info('Processus de copie terminé. Si vous avez fini, vous pouvez déconnecter la clé USB en toute sécurité.')
 
 # Exécute la fonction de copie
 copy_roms(usb_roms_path, retropie_roms_path, consoles)
