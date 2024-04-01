@@ -14,7 +14,7 @@ if git clone https://github.com/Yumi-Lab/Retropie-smartpi.git; then
     echo "Repository cloned successfully."
 else
     echo "Failed to clone repository."
-    exit 1
+    #exit 1
 fi
 
 # Changing to the cloned directory
