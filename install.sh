@@ -60,32 +60,32 @@ fi
 echo "Retropie Installation and configuration completed."
 
 # Install curl and sudo if not already installed
-apt-get update && apt-get install -y curl sudo
+##apt-get update && apt-get install -y curl sudo
 
 # Download and run the installation script for FileBrowser
-curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash
+##curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash
 
 # Configure FileBrowser to use a specific folder and listen on all addresses
-filebrowser config set --address "" --root "/home/pi"
+##filebrowser config set --address "" --root "/home/pi"
 
 # Create a systemd service for FileBrowser
-cat > /etc/systemd/system/filebrowser.service << EOF
-[Unit]
-Description=FileBrowser
-After=network.target
+##cat > /etc/systemd/system/filebrowser.service << EOF
+##[Unit]
+##Description=FileBrowser
+##After=network.target
 
-[Service]
-ExecStart=/usr/local/bin/filebrowser -r /home/pi
-User=pi
-Group=pi
-Restart=always
+##[Service]
+##ExecStart=/usr/local/bin/filebrowser -r /home/pi
+##User=pi
+##Group=pi
+##Restart=always
 
-[Install]
-WantedBy=multi-user.target
-EOF
+##[Install]
+##WantedBy=multi-user.target
+##EOF
 
 # Enable the service and start it
-systemctl enable filebrowser.service
-systemctl start filebrowser.service
+##systemctl enable filebrowser.service
+##systemctl start filebrowser.service
 
-echo "FileBrowser Installation and configuration completed."
+#echo "FileBrowser Installation and configuration completed."
