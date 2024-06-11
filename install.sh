@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Updating the package list and upgrading the existing packages
-echo "Updating and upgrading the system packages..."
-sudo apt-get update && sudo apt-get upgrade -y
+##echo "Updating and upgrading the system packages..."
+##sudo apt-get update && sudo apt-get upgrade -y
 
 # Installing necessary dependencies
 echo "Installing dependencies..."
@@ -27,11 +27,11 @@ execute_script() {
 
 # Executing installation and setup scripts with parameters
 execute_script retropie_packages.sh setup basic_install
-execute_script retropie_packages.sh bluetooth depends
-execute_script retropie_packages.sh usbromservice
-execute_script retropie_packages.sh samba depends
-execute_script retropie_packages.sh samba install_shares
-execute_script autostartES.sh
+##execute_script retropie_packages.sh bluetooth depends
+##execute_script retropie_packages.sh usbromservice
+##execute_script retropie_packages.sh samba depends
+##execute_script retropie_packages.sh samba install_shares
+##execute_script autostartES.sh
 
 # Changing permissions of the RetroPie directory
 echo "Changing permissions of the RetroPie directory..."

@@ -24,7 +24,7 @@ if [[ -n "$__user" ]]; then
     # Check if user exists, exit if not
     if ! id -u "$__user" &>/dev/null; then
         echo "User $__user does not exist" # User does not exist error message
-        exit 1
+        #exit 1
     fi
 else
     user="$SUDO_USER" # Use SUDO_USER if __user not set
@@ -51,7 +51,7 @@ __swapdir="$__tmpdir" # Swap directory
 # Check if script is run with sudo
 if [[ "$(id -u)" -ne 0 ]]; then
     echo "Script must be run under sudo from the user you want to install for. Try 'sudo $0'" # Error message if not run as sudo
-    exit 1
+    #exit 1
 fi
 
 # Setup dialog backtitle
